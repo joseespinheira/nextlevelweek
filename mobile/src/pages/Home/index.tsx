@@ -1,14 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Feather as Icon } from '@expo/vector-icons';
 import { View, ImageBackground, Image, Text, StyleSheet, } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import RNPickerSelect from 'react-native-picker-select';
 
 const Home = () => {
     const navigation = useNavigation();
-
-    function handleNavigateToPoints(){
-        navigation.navigate('Points');
+    const [city, setCity] = useState<string>('');
+    const [uf, setUf] = useState<string>('');
+    function handleNavigateToPoints(city: string, uf: string) {
+        navigation.navigate('Points', { city: city, uf: uf });
+    }
+    const placeholderEstado = {
+        label: 'Selecione um Estado...',
+        value: null,
+        color: '#9EA0A4',
+    }
+    const placeholderCidade = {
+        label: 'Selecione uma Cidade...',
+        value: null,
+        color: '#9EA0A4',
+    }
+    function handleSetCity(city:string){
+        setCity(city);
+    }
+    function handleSetUf(uf:string){
+        setUf(uf);
     }
     return (
         <ImageBackground
@@ -22,8 +40,25 @@ const Home = () => {
                 <Text style={styles.description}>Ajudamos pessoas a encontrarem pontos de coleta de forma eficiente.</Text>
             </View>
 
+            <RNPickerSelect
+                placeholder={placeholderEstado}
+                onValueChange={(value) => handleSetUf(value)}
+                items={[
+                    { label: 'Bahia', value: '29' },
+                    { label: 'outros', value: '99' },
+                ]}
+            />
+            <RNPickerSelect
+                placeholder={placeholderCidade}
+                onValueChange={(value) => handleSetCity(value)}
+                items={[
+                    { label: 'Salvador', value: 'Salvador' },
+                    { label: 'Lauro de Freitas', value: 'lauro de freitas' },
+                    { label: 'Canaã', value: 'canaa' },
+                ]}
+            />
             <View style={styles.footer}>
-                <RectButton style={styles.button} onPress={handleNavigateToPoints}>
+                <RectButton style={styles.button} onPress={() => handleNavigateToPoints(city,uf)}>
                     <View style={styles.buttonIcon}>
                         <Text>
                             <Icon name="arrow-right" color="#FFF" size={24} />
